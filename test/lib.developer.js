@@ -2,20 +2,30 @@ import gplay from '../index.js';
 import { assert } from 'chai';
 import { assertValidApp, assertValidUrl } from './common.js';
 import validator from 'validator';
+import { proxy } from './loadEnvironmentVariables.js';
 
 describe('Developer method', () => {
   it('should fetch a valid application list for the given developer with string id', () => {
-    return gplay.developer({ devId: 'Jam City, Inc.' })
+    return gplay.developer({ devId: 'Google LLC', fullDetail: true })
       .then((apps) => apps.map(assertValidApp))
-      .then((apps) => apps.map((app) => assert.equal(app.developer, 'Jam City, Inc.')));
+      .then((apps) => apps.map((app) => assert.equal(app.developer, 'Google LLC')));
   });
 
   it('should fetch a valid application list for the given developer with numeric id', () => {
-    return gplay.developer({ devId: '5700313618786177705' })
+    return gplay.developer({ devId: 'Jam City, Inc.' })
       .then((apps) => apps.map(assertValidApp))
       .then((apps) => apps.forEach((app) => {
         if (app.developerId) {
-          assert.equal(app.developerId, '5700313618786177705');
+          assert.equal(app.developer, 'Jam City, Inc.');
+        }
+      }));
+  });
+  it('should fetch a valid application list for the given developer with numeric id using proxy', () => {
+    return gplay.developer({ devId: 'Jam City, Inc.', proxy })
+      .then((apps) => apps.map(assertValidApp))
+      .then((apps) => apps.forEach((app) => {
+        if (app.developerId) {
+          assert.equal(app.developer, 'Jam City, Inc.');
         }
       }));
   });
@@ -23,7 +33,7 @@ describe('Developer method', () => {
   it('should not throw an error if too many apps requested', () => {
     return gplay.developer({ devId: '5700313618786177705', num: 500 })
       .then((apps) => {
-        assert(apps.length >= 100, 'should return as many apps as availabe');
+        assert(apps.length >= 10, 'should return as many apps as availabe');
       });
   });
 

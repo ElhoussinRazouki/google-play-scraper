@@ -1,4 +1,4 @@
-import requestLib from 'got';
+import axios from 'axios-https-proxy-fix';
 import throttled from '../lib/utils/throttle.js';
 import sinon from 'sinon';
 import { assert } from 'chai';
@@ -23,7 +23,7 @@ describe('Throttle tests', function () {
     // If we don't want to rely on the availability of a particular api we can use mocks.
     // The fake server intercept http calls and return specified objects if it mach the same method/url.
     server.respondWith('GET', url, JSON.stringify({ test: 'this works' }));
-    const req = throttled(requestLib, {
+    const req = throttled(axios, {
       limit: 1,
       interval: 2000
     });

@@ -2,6 +2,7 @@ import gplay from '../index.js';
 import { assert } from 'chai';
 import { assertValidUrl } from './common.js';
 import { constants } from '../lib/constants.js';
+import { proxy } from './loadEnvironmentVariables.js';
 
 function assertValid (review) {
   assert.isString(review.id);
@@ -37,6 +38,17 @@ describe('Reviews method', () => {
     return gplay.reviews({
       appId: 'com.dxco.pandavszombies',
       sort: constants.sort.HELPFULNESS
+    })
+      .then((reviews) => {
+        reviews.data.map(assertValid);
+      });
+  });
+
+  it('should retrieve the most helpfull reviews of an app using proxy', () => {
+    return gplay.reviews({
+      appId: 'com.dxco.pandavszombies',
+      sort: constants.sort.HELPFULNESS,
+      proxy
     })
       .then((reviews) => {
         reviews.data.map(assertValid);

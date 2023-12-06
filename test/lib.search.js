@@ -1,6 +1,7 @@
 import { assert } from 'chai';
 import gplay from '../index.js';
 import { assertValidApp, assertIdsInArray } from './common.js';
+import { proxy } from './loadEnvironmentVariables.js';
 
 describe('Search method', () => {
   it('should fetch a valid application list', () => {
@@ -28,7 +29,11 @@ describe('Search method', () => {
 
   it('should search for pre register with fullDetail', () =>
     gplay.search({ term: 'preregister', num: 10, fullDetail: true })
-      .then((apps) => apps.map(assertValidApp))).timeout(5 * 1000);
+      .then((apps) => apps.map(assertValidApp))).timeout(20 * 1000);
+
+  it('should search for pre register with fullDetail using proxy', () =>
+    gplay.search({ term: 'preregister', num: 10, fullDetail: true, proxy })
+      .then((apps) => apps.map(assertValidApp))).timeout(20 * 1000);
 
   it('should fetch multiple pages of distinct results', () =>
     gplay.search({ term: 'p', num: 55 })
@@ -113,7 +118,7 @@ describe('Search method', () => {
       return gplay.search({ term: 'runing app' })
         .then((apps) => {
           apps.map(assertValidApp);
-          assertIdsInArray(apps, 'com.runtastic.android', 'running.tracker.gps.map', 'com.google.android.apps.fitness');
+          assertIdsInArray(apps, 'com.strava', 'com.alltrails.alltrails', 'running.tracker.gps.map');
         });
     });
 

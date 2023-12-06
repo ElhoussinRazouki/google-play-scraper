@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import { assertValidApp, assertValidUrl } from './common.js';
 import validator from 'validator';
 import gplay from '../index.js';
+import { proxy } from './loadEnvironmentVariables.js';
 
 describe('List method', () => {
   const timeout = 20 * 1000;
@@ -35,6 +36,16 @@ describe('List method', () => {
     return gplay.list({
       collection: gplay.collection.TOP_FREE,
       num: 100
+    })
+      .then((apps) => apps.map(assertValidApp))
+      .then((apps) => apps.map((app) => assert(app.free)));
+  }).timeout(timeout);
+
+  it('should fetch a valid application list for the top free collection using proxy', () => {
+    return gplay.list({
+      collection: gplay.collection.TOP_FREE,
+      num: 100,
+      proxy
     })
       .then((apps) => apps.map(assertValidApp))
       .then((apps) => apps.map((app) => assert(app.free)));

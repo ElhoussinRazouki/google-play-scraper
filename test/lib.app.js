@@ -2,6 +2,7 @@ import { assert } from 'chai';
 import validator from 'validator';
 import { assertValidUrl } from './common.js';
 import gplay from '../index.js';
+import { proxy } from './loadEnvironmentVariables.js';
 
 const validateAppDetails = (app) => {
   assert.equal(app.appId, 'com.sgn.pandapop.gp');
@@ -99,6 +100,22 @@ describe('App method', () => {
       appId: 'com.sgn.pandapop.gp',
       country: 'br',
       lang: 'pt'
+    })
+      .then((app) => {
+        assert.equal(app.url, 'https://play.google.com/store/apps/details?id=com.sgn.pandapop.gp&hl=pt&gl=br');
+        assert.equal(app.genre, 'Quebra-cabeça');
+        assert.equal(app.androidVersionText, '7.0');
+        assert.equal(app.available, true);
+        validateAppDetails(app);
+      });
+  });
+
+  it('should fetch valid application data using proxy for country: br', () => {
+    return gplay.app({
+      appId: 'com.sgn.pandapop.gp',
+      country: 'br',
+      lang: 'pt',
+      proxy
     })
       .then((app) => {
         assert.equal(app.url, 'https://play.google.com/store/apps/details?id=com.sgn.pandapop.gp&hl=pt&gl=br');
